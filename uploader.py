@@ -1,8 +1,8 @@
 from asyncio import Queue, set_event_loop_policy, WindowsSelectorEventLoopPolicy
 from aiohttp import ClientSession
+from stdiomask import getpass
 from base64 import b64encode
 from os import listdir
-from stdiomask import getpass
 import anyio
 
 
