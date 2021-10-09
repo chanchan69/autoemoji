@@ -2,6 +2,7 @@ from asyncio import Queue, set_event_loop_policy, WindowsSelectorEventLoopPolicy
 from aiohttp import ClientSession
 from base64 import b64encode
 from os import listdir
+from stdiomask import getpass
 import anyio
 
 
@@ -56,5 +57,5 @@ class Uploader(object):
 if __name__ == "__main__":
     path = input("file path to folder with emojis: ").strip('"')
     guild = input("guild id: ")
-    token = input("discord token: ")
+    token = getpass("discord token: ")
     Uploader(path, guild, token)
