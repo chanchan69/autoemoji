@@ -1,8 +1,8 @@
 from asyncio import Queue, set_event_loop_policy, WindowsSelectorEventLoopPolicy
 from aiohttp import ClientSession
-from stdiomask import getpass
 from base64 import b64encode
 from os import listdir
+from stdiomask import getpass
 import anyio
 
 
@@ -30,12 +30,23 @@ class Uploader(object):
             await session.close()
     
     async def main(self) -> None:
+        self.exist = set()
+        async with ClientSession() as session:
+            async with session.get(f"https://discord.com/api/v9/guilds/{self.guild}/emojis", headers={"Authorization": self.token, "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9003 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36"}) as resp:
+                body = await resp.json()
+                for o in body:
+                    self.exist.add(o["name"])
+                await session.close()
+
         async with anyio.create_task_group() as n:
             for _ in range(10):
                 n.start_soon(self.worker)
     
     async def upload(self, item: str, session: ClientSession) -> None:
-        name = item.split("/")[-1].strip(".png").strip(".jpg").strip(".gif")
+        name = item.split("/")[-1].removesuffix(".png").removesuffix(".jpg").removesuffix(".gif")
+        if name in self.exist:
+            print(f"skipped: [{name}]")
+            return
         raw = open(item, 'rb').read()
         encoded = b64encode(raw).decode()
 
