@@ -43,7 +43,7 @@ class Uploader(object):
                 n.start_soon(self.worker)
     
     async def upload(self, item: str, session: ClientSession) -> None:
-        name = item.split("/")[-1].removesuffix(".png").removesuffix(".jpg").removesuffix(".gif")
+        name = item.split("/")[-1].rstrip(".png").rstrip(".jpg").rstrip(".gif")
         if name in self.exist:
             print(f"skipped: [{name}]")
             return
